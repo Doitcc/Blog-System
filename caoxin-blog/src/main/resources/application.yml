@@ -1,0 +1,54 @@
+server:
+  port: 7777
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    url: jdbc:mysql://47.113.231.164:3306/cx_blog?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ENC(hH7j87Tq6e72+KeQx6EdHA==)  #加密处理
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+  redis:
+    port: 6379
+    host: 47.113.231.164 #服务器地址
+    password: ENC(E7uhp4c+LESXziBsk9L1VoJkPcwECfd4)
+    #host: 192.168.226.129 VM地址
+    #qq邮箱配置
+  mail:
+    host: smtp.qq.com
+    username: 813764130@qq.com
+    password: ENC(OuLpS4D7LinI4gecoe9T1vmgLBchYUx64iWBdRX4eZc=)
+    default-encoding: UTF-8
+    protocol: smtps  #默认是smtp 因为使用465所以需改为smtps
+    port: 465
+    # 设置开启ssl 达到报文加密效果
+    properties:
+      mail:
+        stmp:
+          ssl:
+            enable: true
+mybatis-plus:
+  #  configuration:
+  #    # 日志
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
+oss:
+  accessKey: ENC(5BZF5JmjEwUkXejuoBANS9vOIdWVI7DCzkTOUN4wleV2pWfSD94IIbHSPKmSZpFSPYQc6W8OcVw=)
+  secretKey: ENC(upB2DJ7bZMWfRXzZhqCa2LF0jwTObcdSwHdHpNJGuqz6k3DiGU7xEQ/zNTuOxbbrXBJEAiYyLIs=)
+  bucket: caoxin-blog
+logging:
+  level:
+    root: info
+#jasypt加密的密匙
+jasypt:
+  encryptor:
+    password: xxxx

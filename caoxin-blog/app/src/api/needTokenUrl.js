@@ -1,0 +1,3 @@
+var needTokenUrl = ['/logout','/user/userInfo','/content/tag/add','/content/tag/delete','/management/write','/management/modify','/management/delete','/message/loggedIn','/comment/add','/comment/addLinkComment','/link/applyLink','/link/deleteLink','/link/editLink','/link/getLinkAdmin','/link/queryStatusSelf','/link/modifyLink','/link/getLinkAdmin','/link/editLink','/link/deleteLink']
+
+export default needTokenUrl

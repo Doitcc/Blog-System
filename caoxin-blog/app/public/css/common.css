@@ -1,0 +1,24 @@
+@import "http://at.alicdn.com/t/c/font_3913427_o3lpdmvd7o.css";
+
+.main {
+	width: 100%;
+  color: var(--normal-text);
+}
+
+.main>.imgs {
+	position: fixed;
+	left: 0;
+	top: 0;
+	height: 100vh;
+	width: 100%;
+	overflow: hidden;
+	z-index: -10;
+}
+.main>.imgs>ul {
+	display: block;
+	height: 100vh;
+}
+
+.hidden {
+  display: none;
+}

@@ -29,6 +29,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private RedisUtils redisUtils;
     @Autowired
     private ArticleService articleService;
+    
+    private ArticleMapper articleMapper;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -50,7 +52,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         //按照浏览量进行排序
         lqw.orderByDesc(Article::getViewCount);
         //最多只查询10条
-        Page<Article> page = new Page<>(1, 10);
+        Page<Article> page = new Page<>(1, 3);
         page(page, lqw);
 
         List<Article> articles = page.getRecords();

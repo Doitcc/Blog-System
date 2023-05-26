@@ -54,8 +54,7 @@ public class LinkController {
     }
     
     @PutMapping("/modifyLink")
-    public ResponseResult modifyLink(@RequestBody OrdinaryLinkVo ordinaryLinkVo){
+    public ResponseResult modifyLink(@RequestBody OrdinaryLinkVo ordinaryLinkVo) {
         return linkService.modifyLink(ordinaryLinkVo);
     }
-    
 }

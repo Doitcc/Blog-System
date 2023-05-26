@@ -30,13 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     AuthenticationEntryPoint authenticationEntryPoint;
     @Autowired
     AccessDeniedHandler accessDeniedHandler;
-
-//    @Autowired
-//    private UserDetailsService userDetailsService;
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService);
-//    }
+    
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

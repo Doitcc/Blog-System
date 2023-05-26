@@ -35,15 +35,15 @@ public class OssUploadService implements UploadService {
 //            throw new SystemException(CodeEnum.FILE_TYPE_ERROR);
 //        }
         boolean flag = FileSizeUtils.checkFileSize(img.getSize(), 2, "M");
-        if(!flag){
+        if (!flag) {
             return ResponseResult.errorResult(CodeEnum.IMG_MAX_ERROR);
         }
 
         //如果判断通过上传文件到OSS
         String filePath = PathUtils.generateFilePath(originalFilename);
 //        System.out.println(filePath);
-        String name="head/";
-        String url = uploadOss(img,filePath,name);//  2099/2/3/wqeqeqe.png
+        String name = "head/";
+        String url = uploadOss(img, filePath, name);//  2099/2/3/wqeqeqe.png
 //        System.out.println(url);
         return ResponseResult.okResult(url);
     }
@@ -59,15 +59,15 @@ public class OssUploadService implements UploadService {
 //        }
         System.out.println(img.getSize());
         boolean flag = FileSizeUtils.checkFileSize(img.getSize(), 2, "M");
-        if(!flag){
+        if (!flag) {
             return ResponseResult.errorResult(CodeEnum.IMG_MAX_ERROR);
         }
 
         //如果判断通过上传文件到OSS
         String filePath = PathUtils.generateFilePath(originalFilename);
 //        System.out.println(filePath);
-        String name="article/";
-        String url = uploadOss(img,filePath,name);//  2099/2/3/wqeqeqe.png
+        String name = "article/";
+        String url = uploadOss(img, filePath, name);//  2099/2/3/wqeqeqe.png
 //        System.out.println(url);
         return ResponseResult.okResult(url);
     }
@@ -80,7 +80,7 @@ public class OssUploadService implements UploadService {
     private String bucket;
 
 
-    private String uploadOss(MultipartFile imgFile, String filePath,String categoryName){
+    private String uploadOss(MultipartFile imgFile, String filePath, String categoryName) {
         System.out.println(imgFile);
         System.out.println(filePath);
         //构造一个带指定 Region 对象的配置类
@@ -88,18 +88,19 @@ public class OssUploadService implements UploadService {
         //...其他参数参考类注释
         UploadManager uploadManager = new UploadManager(cfg);
         //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = categoryName+filePath;
+        String key = categoryName + filePath;
         try {
             InputStream inputStream = imgFile.getInputStream();
             Auth auth = Auth.create(accessKey, secretKey);
             String upToken = auth.uploadToken(bucket);
             try {
-                Response response = uploadManager.put(inputStream,key,upToken,null, null);
+                Response response = uploadManager.put(inputStream, key, upToken, null, null);
                 //解析上传成功的结果
                 DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
 //                System.out.println(putRet.key);
 //                System.out.println(putRet.hash);
-                return "http://rulf5wkef.hd-bkt.clouddn.com/"+key;
+                return "http://rulf5wkef.hd-bkt.clouddn.com/" + key;
+//                return "http://rv61wsgd7.hn-bkt.clouddn.com/"+key;
             } catch (QiniuException ex) {
                 Response r = ex.response;
                 System.err.println(r.toString());
@@ -114,7 +115,6 @@ public class OssUploadService implements UploadService {
         }
         return "www";
     }
-    
 
-    
+
 }

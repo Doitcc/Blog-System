@@ -23,9 +23,7 @@ public class CommentController {
     public ResponseResult addComment(@RequestBody Comment comment) {
         return commentService.addComment(comment);
     }
-
-
-
+    
     @GetMapping("/linkCommentList")
     public ResponseResult linkCommentList(Integer pageNum, Integer pageSize) {
         return commentService.commentList(SystemConstants.LINK_COMMENT, -1L, pageNum, pageSize);
@@ -33,6 +31,7 @@ public class CommentController {
 
     @PostMapping("/addLinkComment")
     public ResponseResult addLinkComment(@RequestBody Comment comment) {
+
         return commentService.addLinkComment(comment);
     }
 }

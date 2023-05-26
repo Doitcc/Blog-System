@@ -15,10 +15,14 @@ import com.caoxin.mapper.CommentMapper;
 import com.caoxin.service.CommentService;
 import com.caoxin.service.UserService;
 import com.caoxin.utils.BeanCopyUtils;
+import com.caoxin.utils.SensitiveWordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 
@@ -33,18 +37,18 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         //查询对应文章的根评论
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         //对articleId进行判断
-        queryWrapper.eq(SystemConstants.ARTICLE_COMMENT.equals(commentType),Comment::getArticleId,articleId);
+        queryWrapper.eq(SystemConstants.ARTICLE_COMMENT.equals(commentType), Comment::getArticleId, articleId);
         //根评论 rootId为-1
-        queryWrapper.eq(Comment::getRootId,-1);
+        queryWrapper.eq(Comment::getRootId, -1);
 
         //评论类型
-        queryWrapper.eq(Comment::getType,commentType);
-        
+        queryWrapper.eq(Comment::getType, commentType);
+
         queryWrapper.orderByDesc(Comment::getCreateTime);
-        
+
         //分页查询
-        Page<Comment> page = new Page(pageNum,pageSize);
-        page(page,queryWrapper);
+        Page<Comment> page = new Page(pageNum, pageSize);
+        page(page, queryWrapper);
 
         List<CommentVo> commentVoList = toCommentVoList(page.getRecords());
 
@@ -56,15 +60,19 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             commentVo.setChildren(children);
         }
 
-        return ResponseResult.okResult(new PageVo(commentVoList,page.getTotal()));
+        return ResponseResult.okResult(new PageVo(commentVoList, page.getTotal()));
     }
 
     @Override
     public ResponseResult addComment(Comment comment) {
         //评论内容不能为空
-        if(!StringUtils.hasText(comment.getContent())){
+        if (!StringUtils.hasText(comment.getContent())) {
             throw new SystemException(CodeEnum.CONTENT_NOT_NULL);
         }
+        
+        SensitiveWordUtils.initMap(); //初始化
+        String afterFilterComment = SensitiveWordUtils.matchWords(comment.getContent());
+        comment.setContent(afterFilterComment);
         save(comment);
         return ResponseResult.okResult();
     }
@@ -72,9 +80,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     public ResponseResult addLinkComment(Comment comment) {
         //评论内容不能为空
-        if(!StringUtils.hasText(comment.getContent())){
+        if (!StringUtils.hasText(comment.getContent())) {
             throw new SystemException(CodeEnum.CONTENT_NOT_NULL);
         }
+
+        SensitiveWordUtils.initMap(); //初始化
+        String afterFilterComment = SensitiveWordUtils.matchWords(comment.getContent());
+        comment.setContent(afterFilterComment);
         comment.setArticleId(-1L);
         save(comment);
         return ResponseResult.okResult();
@@ -82,13 +94,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     /**
      * 根据根评论的id查询所对应的子评论的集合
+     *
      * @param id 根评论的id
      * @return
      */
     private List<CommentVo> getChildren(Long id) {
 
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getRootId,id);
+        queryWrapper.eq(Comment::getRootId, id);
         queryWrapper.orderByAsc(Comment::getCreateTime);
         List<Comment> comments = list(queryWrapper);
 
@@ -96,7 +109,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         return commentVos;
     }
 
-    private List<CommentVo> toCommentVoList(List<Comment> list){
+    private List<CommentVo> toCommentVoList(List<Comment> list) {
         List<CommentVo> commentVos = BeanCopyUtils.copyBeanList(list, CommentVo.class);
         //遍历vo集合
         for (CommentVo commentVo : commentVos) {
@@ -107,7 +120,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 //            commentVo.setToCommentNickName(commentVo.getToCommentNickName());
             //通过toCommentUserId查询用户的昵称并赋值
             //如果toCommentUserId不为-1才进行查询
-            if(commentVo.getToCommentUserId()!=-1){
+            if (commentVo.getToCommentUserId() != -1) {
                 String toCommentNickName = userService.getById(commentVo.getToCommentUserId()).getNickName();
                 commentVo.setToCommentNickName(toCommentNickName);
             }
